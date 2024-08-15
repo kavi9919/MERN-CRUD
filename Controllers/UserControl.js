@@ -45,3 +45,37 @@ exports.getUsersById = async (req, res, next) => {
         return res.status(500).json({ message: e.message });
     }
 };
+
+// update user
+exports.updateUser = async (req, res, next) => {
+    const userId = req.params.id;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        user.name = req.body.name;
+        user.email = req.body.email;
+        user.age = req.body.age;
+        const updatedUser = await user.save();
+        return res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    } catch (e) {
+        return res.status(500).json({ message: e.message });
+    }
+};
+
+// delete user
+exports.deleteUser =async (req, res, next) => {
+    const userId = req.params.id;
+    let user;
+    try{
+        user= await User.findByIdAndDelete(userId);
+        if(!user){
+            return res.status(404).json({message: 'User not found'});
+        }
+        return res.status(200).json({message: 'User deleted successfully'});
+    }
+    catch(e){
+        return res.status(500).json({message: e.message});
+    }
+};
